@@ -2,6 +2,8 @@
 Proof of concept of an 3D Game Engine using Rust and Lua.
 This is a remake of my [Console render system](https://github.com/HectorPulido/console-render-system/tree/main) but using a more powerful language and without the limitations of the console.
 
+![Example](/resources/gif.gif) <br/>
+
 ## Features
 - Custom 3D Rendering
 - Obj models import
