@@ -1,18 +1,18 @@
 extern crate nalgebra as na;
 use na::{Matrix4, Vector3};
 
-/// Cámara 3D con proyección en perspectiva completa.
 pub struct Camera3d {
-    fov: f32,    // campo de visión en radianes
-    aspect: f32, // relación de aspecto (ancho / alto)
+    // Field of view on radians
+    fov: f32,
+    // Width / Height
+    aspect: f32,
     near: f32,
     far: f32,
 }
 
 impl Camera3d {
-    /// Crea una nueva cámara. Se ingresa el campo de visión en grados.
     pub fn new(fov_deg: f32, aspect: f32, near: f32, far: f32) -> Self {
-        let fov = fov_deg.to_radians();
+        let fov: f32 = fov_deg.to_radians();
         Camera3d {
             fov,
             aspect,
@@ -21,7 +21,7 @@ impl Camera3d {
         }
     }
 
-    /// Proyecta un punto 3D a 2D usando una matriz de proyección perspectiva.
+    // Returns the projection matrix
     pub fn projection_matrix(&self) -> Matrix4<f32> {
         let f = 1.0 / (self.fov / 2.0).tan();
         Matrix4::new(
@@ -44,7 +44,7 @@ impl Camera3d {
         )
     }
 
-    /// Proyecta un punto 3D a 2D utilizando la matriz de proyección proporcionada.
+    // Projects a 3D point into 2D screen coordinates
     pub fn project_point_with(
         &self,
         point: &Vector3<f32>,

@@ -1,5 +1,5 @@
 local function update_cube(dt, object, inputs)
-    SPEED = 10.0
+    SPEED = 15.0
     object.position.z = object.position.z + (SPEED * dt)
 
     if object.position.z > 40.0 then
@@ -10,7 +10,7 @@ local function update_cube(dt, object, inputs)
 end
 
 local function update_aircraft(dt, object, inputs, utils)
-    SPEED = 5.0
+    SPEED = 10.0
 
     if utils.has_value(inputs.pressing, 'A') then
         object.position.x = object.position.x + (SPEED * dt)
@@ -26,6 +26,7 @@ local function update_aircraft(dt, object, inputs, utils)
     end
 
     if utils.has_value(inputs.just_pressed, 'P') then
+        play_sound('audio/blaster.wav')
         new_model('model/cube.obj', {
                 x = object.position.x,
                 y = object.position.y,

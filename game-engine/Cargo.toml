@@ -6,6 +6,11 @@ edition = "2021"
 [dependencies]
 nalgebra = "0.32"
 device_query = "0.2"
-piston_window = "0.132.0"
 rand = "0.8"
 mlua = { version = "0.10.3", default-features = false, features = ["lua54"] }
+wgpu = "24.0.3"
+winit = "0.30.9"
+pollster = "0.4.0"
+env_logger = "0.11.8"
+bytemuck = { version = "1.22.0", features = ["derive"] }
+rodio = "0.20.1"

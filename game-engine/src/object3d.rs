@@ -17,7 +17,7 @@ pub struct Object3d {
 }
 
 impl Object3d {
-    /// Crea un nuevo Object3d cargando el modelo desde un archivo OBJ.
+    /// Create a new Object3d from a model path, position and rotation.
     pub fn new(model_path: &str, position: Vector3<f32>, rotation: f32) -> Self {
         let num = rand::thread_rng().gen_range(0..100000);
         let (model, edges) = Self::load_obj(model_path);
@@ -35,7 +35,7 @@ impl Object3d {
         }
     }
 
-    /// Aplica una rotación (alrededor del eje Y) y traslación a cada vértice.
+    /// Apply a translation to the object.
     pub fn transform_points(&mut self) -> &[Vector3<f32>] {
         let cos_theta = self.rotation.cos();
         let sin_theta = self.rotation.sin();
@@ -50,16 +50,14 @@ impl Object3d {
     }
 
     pub fn load_obj(file_path: &str) -> (Vec<Vector3<f32>>, Vec<Vec<usize>>) {
-        let file =
-            File::open(file_path).expect("No se pudo abrir el archivo OBJ. Verifica la ruta.");
+        let file = File::open(file_path).expect("Could not open the file");
         let reader = BufReader::new(file);
         let mut vertices = Vec::new();
         let mut edges = Vec::new();
 
         for line in reader.lines() {
-            let line = line.expect("Error al leer la línea");
+            let line = line.expect("Error reading line");
             if line.starts_with("v ") {
-                // Separamos la línea y convertimos los valores a f32.
                 let parts: Vec<&str> = line.split_whitespace().collect();
                 if parts.len() >= 4 {
                     let x: f32 = parts[1].parse().unwrap_or(0.0);
@@ -68,12 +66,10 @@ impl Object3d {
                     vertices.push(Vector3::new(x, y, z));
                 }
             } else if line.starts_with("f ") {
-                // Para las caras, se espera que los índices puedan venir con formateo "1/2/3".
                 let parts: Vec<&str> = line.split_whitespace().collect();
                 let mut face = Vec::new();
                 for part in parts.iter().skip(1) {
                     let index_str = part.split('/').next().unwrap();
-                    // Los índices en OBJ comienzan en 1, así que se resta 1.
                     let index: usize = index_str.parse().unwrap_or(0);
                     face.push(index - 1);
                 }

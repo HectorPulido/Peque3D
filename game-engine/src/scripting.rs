@@ -4,36 +4,44 @@ use std::{cell::RefCell, rc::Rc};
 
 use super::input::Input;
 use super::object3d::Object3d;
+use super::sound_system::SoundSystem;
 
 pub struct LuaInt {
     lua: Lua,
     pub objects: Rc<RefCell<Vec<Object3d>>>,
     pub pending_objects: Rc<RefCell<Vec<Object3d>>>,
+    // pub sound_system: Rc<SoundSystem>,
 }
 
 impl LuaInt {
     pub fn new() -> LuaResult<Self> {
-        // Usa Rc para poder compartir el vector de objetos
-        let objects = Rc::new(RefCell::new(vec![
-            Object3d::new("model/aircraft.obj", Vector3::new(0.0, 0.0, 5.0), 0.0),
-        ]));
+        // RC to share the objects between the Lua context and the main thread
+        let sound_system = Rc::new(SoundSystem::new().expect("Failed to initialize SoundSystem"));
+
+        let objects = Rc::new(RefCell::new(vec![Object3d::new(
+            "model/aircraft.obj",
+            Vector3::new(0.0, 0.0, 5.0),
+            0.0,
+        )]));
         let pending_objects = Rc::new(RefCell::new(Vec::new()));
         let lua = Lua::new();
 
-        lua.globals().set(
-            "print",
-            lua.create_function(|_, args: MultiValue| {
-                let output: Vec<String> = args
-                    .into_iter()
-                    .map(|val| match val {
-                        Value::String(s) => Ok(s.to_str()?.to_string()),
-                        other => Ok(format!("{:?}", other)),
-                    })
-                    .collect::<LuaResult<Vec<String>>>()?;
-                println!("{}", output.join("\t"));
-                Ok(())
-            })?,
-        )?;
+        {
+            lua.globals().set(
+                "print",
+                lua.create_function(|_, args: MultiValue| {
+                    let output: Vec<String> = args
+                        .into_iter()
+                        .map(|val| match val {
+                            Value::String(s) => Ok(s.to_str()?.to_string()),
+                            other => Ok(format!("{:?}", other)),
+                        })
+                        .collect::<LuaResult<Vec<String>>>()?;
+                    println!("{}", output.join("\t"));
+                    Ok(())
+                })?,
+            )?;
+        }
 
         {
             let pending_objects_clone = Rc::clone(&pending_objects);
@@ -52,7 +60,20 @@ impl LuaInt {
             )?;
         }
 
-        // Carga y ejecuta el script de Lua
+        {
+            let sound_system = Rc::clone(&sound_system);
+            lua.globals().set(
+                "play_sound",
+                lua.create_function_mut(move |_, (path,): (String,)| {
+                    sound_system
+                        .play_sound(&path)
+                        .expect("Failed to play sound");
+                    Ok(())
+                })?,
+            )?;
+        }
+
+        // Load and execute the Lua script
         let update_script =
             std::fs::read_to_string("scripting/update.lua").expect("Could not read the Lua script");
         lua.load(&update_script).exec()?;
