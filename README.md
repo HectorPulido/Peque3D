@@ -9,12 +9,11 @@ This is a remake of my [Console render system](https://github.com/HectorPulido/c
 - Obj models import
 - Input management
 - Lua scripting
+- Sound engine
 
 ## Todo
 - Physics engine
 - Finish the 3D rendering pipeline
-- Migrate from piston_window to something more performant
-- Sound engine
 
 ## How to run
 - Install Rust
@@ -22,7 +21,11 @@ This is a remake of my [Console render system](https://github.com/HectorPulido/c
 - Run `cargo run`
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project code is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Models and other resources are not included in the license.
+
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request if you have any suggestions or improvements.
 
 
 
