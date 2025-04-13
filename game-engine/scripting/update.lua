@@ -9,6 +9,7 @@ local function update_cube(dt, object, inputs)
     return object
 end
 
+TimesShoot = 0
 local function update_aircraft(dt, object, inputs, utils)
     SPEED = 10.0
 
@@ -33,11 +34,12 @@ local function update_aircraft(dt, object, inputs, utils)
                 z = object.position.z
             },
             object.rotation)
+        TimesShoot = TimesShoot + 1
+        print('TimesShoot: ' .. TimesShoot)
     end
 
     return object
 end
-
 
 function update(dt, object, inputs)
     local utils = require('scripting/utils')

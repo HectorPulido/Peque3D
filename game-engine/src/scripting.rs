@@ -14,15 +14,12 @@ pub struct LuaInt {
 }
 
 impl LuaInt {
+    #[allow(dependency_on_unit_never_type_fallback)]
     pub fn new() -> LuaResult<Self> {
         // RC to share the objects between the Lua context and the main thread
         let sound_system = Rc::new(SoundSystem::new().expect("Failed to initialize SoundSystem"));
 
-        let objects = Rc::new(RefCell::new(vec![Object3d::new(
-            "model/aircraft.obj",
-            Vector3::new(0.0, 0.0, 5.0),
-            0.0,
-        )]));
+        let objects = Rc::new(RefCell::new(vec![]));
         let pending_objects = Rc::new(RefCell::new(Vec::new()));
         let lua = Lua::new();
 
@@ -73,7 +70,15 @@ impl LuaInt {
             )?;
         }
 
-        // Load and execute the Lua script
+        // Load and execute the Lua script start
+        let start_script =
+            std::fs::read_to_string("scripting/start.lua").expect("Could not read the Lua script");
+        lua.load(&start_script).exec()?;
+
+        let start_func: mlua::Function = lua.globals().get("start")?;
+        start_func.call(())?;
+
+        // Load and execute the Lua script update
         let update_script =
             std::fs::read_to_string("scripting/update.lua").expect("Could not read the Lua script");
         lua.load(&update_script).exec()?;
