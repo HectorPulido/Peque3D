@@ -15,6 +15,12 @@ This is a remake of my [Console render system](https://github.com/HectorPulido/c
 - Physics engine
 - Finish the 3D rendering pipeline
 
+## Youtube video
+This project is part of a video on my Youtube channel. The videos are in Spanish, but you can enable subtitles in English.
+
+[![Youtube video](https://img.youtube.com/vi/4jgOk_BJKT0/0.jpg)](https://www.youtube.com/watch?v=4jgOk_BJKT0)
+
+
 ## How to run
 - Install Rust
 - Go to the project directory
